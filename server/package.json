@@ -1,0 +1,36 @@
+{
+  "name": "web-scrapper-api",
+  "version": "0.0.0",
+  "description": "WebScrappingApi Test app",
+  "type": "module",
+  "engines": {
+    "node": ">= 18.12 <19"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.18",
+    "@types/node": "^18.18.4",
+    "@typescript-eslint/eslint-plugin": "~6.2",
+    "@typescript-eslint/parser": "~6.2",
+    "dotenv": "^16.3.1",
+    "eslint": "~8.46",
+    "eslint-config-prettier": "~9.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "express": "^4.18.2",
+    "prettier": "~3.0",
+    "ts-api-utils": "~1.0",
+    "typescript": "~5.1"
+  },
+  "scripts": {
+    "start": "node build/src/main.js",
+    "build": "tsc -p tsconfig.json",
+    "build:watch": "tsc -w -p tsconfig.json",
+    "lint": "eslint . --ext .ts --ext .mts",
+    "prettier": "prettier --config .prettierrc --write ."
+  },
+  "dependencies": {
+    "axios": "^1.5.1",
+    "cheerio": "^1.0.0-rc.12",
+    "puppeteer": "^21.3.8",
+    "tslib": "~2.6"
+  }
+}

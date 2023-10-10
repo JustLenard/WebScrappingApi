@@ -1,0 +1,8 @@
+# Dependencies
+server/node_modules/
+client/node_modules/
+
+# Transpiled files
+server/build/
+client/build/
+
