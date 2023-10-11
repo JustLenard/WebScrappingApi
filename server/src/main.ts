@@ -4,6 +4,7 @@ import puppeteer from 'puppeteer'
 import * as env from 'dotenv'
 import * as fs from 'fs'
 import { CardData } from './utils/types.js'
+import { SentimentDetector } from './sentiment/sentimentDetector.js'
 
 env.config()
 const app = express()
@@ -115,14 +116,30 @@ class Scrapper {
 
     const $ = cheerio.load(contentHtml)
     const articleText = $('div:first').text()
-    console.log('This is articleText', articleText)
 
-    const strongTags = $('strong').length
-    console.log('This is strongTags', strongTags)
+    const cleanedTextArray = this.cleanText(articleText).split(' ')
+
+    const text = this.cleanText(articleText)
+    console.log('This is text', text)
+
+    console.log('This is cleanedTextArray length', cleanedTextArray.length)
+    console.log('This is cleanedText', cleanedTextArray)
 
     return {
-      length: articleText.split(' ').length + strongTags,
+      length: cleanedTextArray.length,
     }
+  }
+
+  /**
+   * Leave only alpha numberic, spaces and convert to lower case
+   **/
+  cleanText(text: string) {
+    return (
+      text
+        // .replaceAll(/[^a-zA-Z\s]+/g, ' ')
+        // .replaceAll('  ', '')
+        .toLowerCase()
+    )
   }
 }
 
@@ -130,8 +147,13 @@ app.get('', async (req, res) => {
   const url = req.query.url
 })
 
-const scrapper = new Scrapper()
-scrapper.startScrapper()
+// const scrapper = new Scrapper()
+// scrapper.startScrapper()
+
+const myText = `This is text lifestylethe joys of gardeningdiscover the blissful moments in gardeninggardening is indeed a joyful and rewarding hobby. it is not just an activity but a form of art that brings happiness and a positive vibe to your surroundings. let's delve into the serene world of gardening and the plethora of benefits it brings along.the amazing benefits of gardeningpositive mood: surrounding yourself with beautiful flowers and plants instantly uplifts your mood. the vibrant colors and enchanting fragrances work wonders in driving away negative energies.health benefits: engaging in gardening promotes physical health as it involves various activities like digging, planting, and watering.connection with nature: gardening fosters a deep connection with nature, offering a sense of satisfaction and peace.tips for beginner gardenersif you are a newbie in the gardening world, here are some simple yet effective tips to get you started:start with easy-to-grow plants: opt for plants that are easy to grow and maintain. some great choices include marigolds, sunflowers, and tomatoes.proper watering: ensure your plants receive adequate water, but avoid overwatering to prevent root rot.pest control: learn about organic pest control methods to protect your plants from harmful pests.`
+
+const sent = new SentimentDetector()
+console.log(sent.determineTextSentiment(myText.split(' ')))
 
 app.listen(port, async () => {})
 
