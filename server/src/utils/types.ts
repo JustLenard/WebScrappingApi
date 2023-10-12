@@ -9,6 +9,7 @@ export type DesiredData =
   | 'sentiment'
   | 'author_image'
   | 'author_name'
+  | 'author_occupation'
 
 export type CardData = {
   title?: string
@@ -21,6 +22,7 @@ export type CardData = {
   sentiment?: Sentiment
   author_image?: string
   author_name?: string
+  author_occupation?: string
 }
 
 export type Sentiment = 'positive' | 'neutral' | 'negative'

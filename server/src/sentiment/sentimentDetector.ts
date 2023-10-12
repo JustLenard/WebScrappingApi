@@ -1,11 +1,20 @@
 import { Sentiment } from '../utils/types.js'
 import { wordsScores } from './wordsScore.js'
 
+/**
+ * Singleton class to handle sentiment detection of articles
+ **/
 export class SentimentDetector {
   valueMapping: Map<string, number>
 
+  private static instance: SentimentDetector | null = null
+
   constructor() {
-    this.valueMapping = new Map(Object.entries(wordsScores))
+    if (SentimentDetector.instance === null) {
+      this.valueMapping = new Map(Object.entries(wordsScores))
+      SentimentDetector.instance = this
+    }
+    return SentimentDetector.instance
   }
 
   determineTextSentiment(text: string[]): Sentiment {
@@ -32,3 +41,5 @@ export class SentimentDetector {
     return this.valueMapping.has(word) ? this.valueMapping.get(word) : 0
   }
 }
+
+export const sentimentDetector = new SentimentDetector()
