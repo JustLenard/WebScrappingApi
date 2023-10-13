@@ -134,17 +134,17 @@ export class Scrapper {
 
     const text = this.cleanText(articleText)
 
-    const data: Partial<CardData> = {}
+    const articleData: Partial<CardData> = {}
 
     if (this.desiredData.has('sentiment')) {
-      data.sentiment =
+      articleData.sentiment =
         this.sentimentDetector.determineTextSentiment(cleanedTextArray)
     }
     if (this.desiredData.has('length')) {
-      data.length = cleanedTextArray.length
+      articleData.length = cleanedTextArray.length
     }
 
-    return data
+    return articleData
   }
 
   /**

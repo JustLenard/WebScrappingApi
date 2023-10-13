@@ -36,4 +36,9 @@ export type TransferListContext = {
 	checkBox: (item: DesiredData) => void
 }
 
+export type PostData = {
+	linkToScrape: string
+	dataPointsToScrape: DesiredData[]
+}
+
 export type Sentiment = 'positive' | 'neutral' | 'negative'

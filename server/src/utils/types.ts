@@ -26,3 +26,8 @@ export type CardData = {
 }
 
 export type Sentiment = 'positive' | 'neutral' | 'negative'
+
+export type PostData = {
+  linkToScrape: string
+  dataPointsToScrape: DesiredData[]
+}

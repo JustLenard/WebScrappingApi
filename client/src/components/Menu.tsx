@@ -1,4 +1,12 @@
-import { Button, Menu, MenuHandler, MenuList } from '@material-tailwind/react'
+import {
+	Checkbox,
+	IconButton,
+	Menu,
+	MenuHandler,
+	MenuItem,
+	MenuList,
+} from '@material-tailwind/react'
+import CliplboardIcon from '../icons/Cliplboard'
 import { ALL_OPTIONS } from '../utils/constants'
 import { CheckboxMenuItemType } from '../utils/types'
 import CheckboxMenuItem from './CheckboxMenuItem'
@@ -16,11 +24,15 @@ const MenuWithCheckbox = () => {
 			}}
 		>
 			<MenuHandler>
-				<Button>Open Menu</Button>
+				<IconButton variant="gradient">
+					<CliplboardIcon />
+				</IconButton>
 			</MenuHandler>
 			<MenuList>
 				{menuItems.map((item) => (
-					<CheckboxMenuItem key={item.value} {...item} />
+					<MenuItem className="p-0" key={item.value}>
+						<CheckboxMenuItem value={item.value} label={item.label} />
+					</MenuItem>
 				))}
 			</MenuList>
 		</Menu>
