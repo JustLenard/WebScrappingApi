@@ -1,7 +1,10 @@
 import * as cheerio from 'cheerio'
 import puppeteer from 'puppeteer'
 import { CardData, DesiredData } from '../utils/types.js'
-import { SentimentDetector } from '../sentiment/sentimentDetector.js'
+import {
+  SentimentDetector,
+  sentimentDetectorInstance,
+} from '../sentiment/sentimentDetector.js'
 import { SCRAPE_ROUTE, ALL_OPTIONS } from '../utils/constants.js'
 
 export class Scrapper {
@@ -12,8 +15,8 @@ export class Scrapper {
 
   constructor(
     desiredData: DesiredData[] | 'all',
-    sentimentDetector: SentimentDetector,
     scrapeRoute = SCRAPE_ROUTE,
+    sentimentDetector: SentimentDetector = sentimentDetectorInstance,
   ) {
     this.browser = null
     this.sentimentDetector = sentimentDetector
@@ -30,11 +33,17 @@ export class Scrapper {
     /**
      * Scrape data from the cards
      **/
-    const scrapedData = cardsHtml.map((card) => this.scrapeCard(card))
+    const scrapedData = await Promise.all(
+      cardsHtml.map((card) => this.scrapeCard(card)),
+    )
 
+    this.browser.close()
     return scrapedData
   }
 
+  /**
+   * Get the HTML of the cards
+   **/
   private async getCardsHTml() {
     const page = await this.browser.newPage()
     await page.goto(this.scrapeRoute, { waitUntil: 'domcontentloaded' })
@@ -53,6 +62,9 @@ export class Scrapper {
     return cardsHTML
   }
 
+  /**
+   * Scrape card data
+   **/
   private async scrapeCard(card: string): Promise<CardData> {
     const $ = cheerio.load(card)
 
@@ -69,6 +81,9 @@ export class Scrapper {
     }
     if (this.desiredData.has('short_description')) {
       scrapedData.short_description = $('div.group div').last().text()
+    }
+    if (this.desiredData.has('time')) {
+      scrapedData.time = $('time').text()
     }
     if (this.desiredData.has('article_category')) {
       scrapedData.article_category = $('time').next().text()
@@ -103,6 +118,9 @@ export class Scrapper {
     return scrapedData
   }
 
+  /**
+   * Scrape article data
+   **/
   async scrapeArticle(articleLink: string): Promise<Partial<CardData>> {
     const page = await this.browser.newPage()
 

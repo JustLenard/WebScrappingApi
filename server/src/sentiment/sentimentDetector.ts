@@ -28,9 +28,9 @@ export class SentimentDetector {
     }, 0)
 
     /**
-     * The score needs to be more than 5% of the text's length to be classified as either negative or positive
+     * The score needs to be more than 10% of the text's length to be classified as either negative or positive
      **/
-    const neutralScoreBreakpoint = Math.floor(text.length * 0.05)
+    const neutralScoreBreakpoint = Math.floor(text.length * 0.1)
 
     if (score > neutralScoreBreakpoint) return 'positive'
     if (score < neutralScoreBreakpoint) return 'negative'
@@ -42,4 +42,4 @@ export class SentimentDetector {
   }
 }
 
-export const sentimentDetector = new SentimentDetector()
+export const sentimentDetectorInstance = new SentimentDetector()

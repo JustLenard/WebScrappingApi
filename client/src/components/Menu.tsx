@@ -1,11 +1,4 @@
-import {
-	Checkbox,
-	IconButton,
-	Menu,
-	MenuHandler,
-	MenuItem,
-	MenuList,
-} from '@material-tailwind/react'
+import { IconButton, Menu, MenuHandler, MenuItem, MenuList } from '@material-tailwind/react'
 import CliplboardIcon from '../icons/Cliplboard'
 import { ALL_OPTIONS } from '../utils/constants'
 import { CheckboxMenuItemType } from '../utils/types'
@@ -24,7 +17,7 @@ const MenuWithCheckbox = () => {
 			}}
 		>
 			<MenuHandler>
-				<IconButton variant="gradient">
+				<IconButton variant="filled" className="bg-pink-500">
 					<CliplboardIcon />
 				</IconButton>
 			</MenuHandler>
