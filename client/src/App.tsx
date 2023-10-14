@@ -15,6 +15,9 @@ function App() {
 	const postData = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
 
+		// Prevent user from submitting multiple forms
+		if (loading) return
+
 		const postData: PostData = {
 			dataPointsToScrape: Array.from(checkedBoxes),
 			linkToScrape: inputValue,
@@ -27,7 +30,7 @@ function App() {
 			setScrappedData(JSON.stringify(res.data, null, 2))
 			setLoading(false)
 		} catch (e) {
-			setScrappedData('Ooops, something went wrong. Try later')
+			setScrappedData('Hmmm, something went wrong. Try again later')
 			setLoading(false)
 		}
 	}

@@ -33,7 +33,7 @@ export class SentimentDetector {
     const neutralScoreBreakpoint = Math.floor(text.length * 0.1)
 
     if (score > neutralScoreBreakpoint) return 'positive'
-    if (score < neutralScoreBreakpoint) return 'negative'
+    if (score < -neutralScoreBreakpoint) return 'negative'
     return 'neutral'
   }
 
