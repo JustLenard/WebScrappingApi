@@ -51,11 +51,8 @@ export class Scrapper {
    **/
   private async getCardsHTml() {
     const page = await this.browser.newPage()
-    console.log('This is scrapeRoute', this.scrapeRoute)
 
     await page.goto(this.scrapeRoute, { waitUntil: 'domcontentloaded' })
-
-    console.log('navigated')
 
     await page.setViewport({ width: 1080, height: 1024 })
 
@@ -172,6 +169,8 @@ export class Scrapper {
       .replaceAll(' * ', '')
       .replaceAll('  ', ' ')
       .replaceAll(/[^a-zA-Z\s']+/g, '')
+      .replace(/\s\s+/g, ' ')
+      .trim()
       .toLowerCase()
   }
 }
