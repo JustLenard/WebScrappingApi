@@ -76,7 +76,14 @@ This route allows you to initiate web scraping by providing a target URL and spe
 ```json
 {
   "linkToScrape": "string",
-  "dataPointsToScrape": ["title","image","href","short_description","time","length""article_category","sentiment",  "author_image",  "author_name","author_occupation"] || "all"
+  "dataPointsToScrape": ["title","image","href","short_description","time","length""article_category","sentiment",  "author_image",  "author_name","author_occupation"]
+}
+```
+
+```json
+{
+  "linkToScrape": "string",
+  "dataPointsToScrape": "all"
 }
 ```
 
