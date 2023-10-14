@@ -1,5 +1,6 @@
 import { DesiredData } from './types'
 
+export const SCRAPE_ROUTE = 'https://wsa-test.vercel.app'
 export const ALL_OPTIONS: DesiredData[] = [
 	'title',
 	'image',

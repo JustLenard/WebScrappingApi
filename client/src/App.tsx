@@ -1,14 +1,16 @@
 import { useState } from 'react'
 import { appAxios } from './axios/axios'
-import JsonViewer from './components/Mate'
+import JsonViewer from './components/JsonViewer'
 import MenuWithCheckbox from './components/Menu'
 import { useCheckboxesContext } from './hooks/customHooks'
+import { SCRAPE_ROUTE } from './utils/constants'
 import { PostData } from './utils/types'
 
 function App() {
-	const [inputValue, setInputValue] = useState('')
+	const [inputValue, setInputValue] = useState(SCRAPE_ROUTE)
 	const { checkedBoxes } = useCheckboxesContext()
-	const [scrappedData, setScrappedData] = useState(null)
+	const [scrappedData, setScrappedData] = useState<null | string>(null)
+	const [loading, setLoading] = useState(false)
 
 	const postData = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
@@ -17,11 +19,17 @@ function App() {
 			dataPointsToScrape: Array.from(checkedBoxes),
 			linkToScrape: inputValue,
 		}
+		try {
+			setLoading(true)
+			const res = await appAxios.post('/scrape', postData)
 
-		const res = await appAxios.post('/scrape', postData)
-
-		console.log('This is res', res)
-		setScrappedData(res.data)
+			console.log('This is res', res)
+			setScrappedData(JSON.stringify(res.data, null, 2))
+			setLoading(false)
+		} catch (e) {
+			setScrappedData('Ooops, something went wrong. Try later')
+			setLoading(false)
+		}
 	}
 
 	return (
@@ -54,7 +62,7 @@ function App() {
 					<MenuWithCheckbox />
 				</div>
 			</div>
-			<JsonViewer scrappedData={scrappedData} />
+			<JsonViewer scrappedData={scrappedData} loading={loading} />
 		</div>
 	)
 }

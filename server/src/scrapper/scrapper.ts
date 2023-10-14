@@ -26,7 +26,7 @@ export class Scrapper {
   }
 
   async startScrapper() {
-    this.browser = await puppeteer.launch({ headless: false })
+    this.browser = await puppeteer.launch({ headless: true })
 
     const cardsHtml = await this.getCardsHTml()
 
@@ -46,6 +46,7 @@ export class Scrapper {
    **/
   private async getCardsHTml() {
     const page = await this.browser.newPage()
+    console.log('This is scrapeRoute', this.scrapeRoute)
     await page.goto(this.scrapeRoute, { waitUntil: 'domcontentloaded' })
     await page.setViewport({ width: 1080, height: 1024 })
 
@@ -121,10 +122,11 @@ export class Scrapper {
   /**
    * Scrape article data
    **/
-  async scrapeArticle(articleLink: string): Promise<Partial<CardData>> {
+  private async scrapeArticle(articleLink: string): Promise<Partial<CardData>> {
     const page = await this.browser.newPage()
 
     // Navigate the page to a URL
+    console.log('This is articleLink', articleLink)
     await page.goto(articleLink, { waitUntil: 'domcontentloaded' })
     await page.setViewport({ width: 1080, height: 1024 })
 
