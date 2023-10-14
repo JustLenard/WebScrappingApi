@@ -1,14 +1,14 @@
 import * as cheerio from 'cheerio'
-import puppeteer from 'puppeteer'
-import { CardData, DesiredData } from '../utils/types.js'
+import puppeteer, { Browser } from 'puppeteer'
 import {
   SentimentDetector,
   sentimentDetectorInstance,
 } from '../sentiment/sentimentDetector.js'
-import { SCRAPE_ROUTE, ALL_OPTIONS } from '../utils/constants.js'
+import { ALL_OPTIONS, SCRAPE_ROUTE } from '../utils/constants.js'
+import { CardData, DesiredData } from '../utils/types.js'
 
 export class Scrapper {
-  private browser: null | puppeteer.Browser
+  private browser: null | Browser
   private desiredData: Set<DesiredData>
   private sentimentDetector: SentimentDetector
   private scrapeRoute: string
@@ -26,19 +26,24 @@ export class Scrapper {
   }
 
   async startScrapper() {
-    this.browser = await puppeteer.launch({ headless: true })
+    try {
+      this.browser = await puppeteer.launch({ headless: false })
 
-    const cardsHtml = await this.getCardsHTml()
+      const cardsHtml = await this.getCardsHTml()
 
-    /**
-     * Scrape data from the cards
-     **/
-    const scrapedData = await Promise.all(
-      cardsHtml.map((card) => this.scrapeCard(card)),
-    )
+      /**
+       * Scrape data from the cards
+       **/
+      const scrapedData = await Promise.all(
+        cardsHtml.map((card) => this.scrapeCard(card)),
+      )
 
-    this.browser.close()
-    return scrapedData
+      this.browser.close()
+      return scrapedData
+    } catch (err) {
+      console.error('An error occurred during scraping:', err)
+      return 'Something went wrong. Please try again latter'
+    }
   }
 
   /**
@@ -47,7 +52,11 @@ export class Scrapper {
   private async getCardsHTml() {
     const page = await this.browser.newPage()
     console.log('This is scrapeRoute', this.scrapeRoute)
+
     await page.goto(this.scrapeRoute, { waitUntil: 'domcontentloaded' })
+
+    console.log('navigated')
+
     await page.setViewport({ width: 1080, height: 1024 })
 
     const cardsContainer = await (
@@ -122,7 +131,7 @@ export class Scrapper {
   /**
    * Scrape article data
    **/
-  private async scrapeArticle(articleLink: string): Promise<Partial<CardData>> {
+  async scrapeArticle(articleLink: string): Promise<Partial<CardData>> {
     const page = await this.browser.newPage()
 
     // Navigate the page to a URL
@@ -152,7 +161,7 @@ export class Scrapper {
 
     const cleanedTextArray = this.cleanText(articleText).split(' ')
 
-    const text = this.cleanText(articleText)
+    // const text = this.cleanText(articleText)
 
     const articleData: Partial<CardData> = {}
 

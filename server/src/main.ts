@@ -12,9 +12,9 @@ app.use(cors())
 const port = process.env.PORT || 5000
 
 app.post('/api/scrape', async (req, res) => {
-  const body: PostData = req.body
+  const { dataPointsToScrape, linkToScrape }: PostData = req.body
 
-  const scrapper = new Scrapper(body.dataPointsToScrape, body.linkToScrape)
+  const scrapper = new Scrapper(dataPointsToScrape, linkToScrape)
 
   const scrappedData = await scrapper.startScrapper()
   console.log('This is scrappedData', scrappedData)

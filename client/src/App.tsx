@@ -6,7 +6,7 @@ import { useCheckboxesContext } from './hooks/customHooks'
 import { SCRAPE_ROUTE } from './utils/constants'
 import { PostData } from './utils/types'
 
-function App() {
+const App: React.FC = () => {
 	const [inputValue, setInputValue] = useState(SCRAPE_ROUTE)
 	const { checkedBoxes } = useCheckboxesContext()
 	const [scrappedData, setScrappedData] = useState<null | string>(null)
