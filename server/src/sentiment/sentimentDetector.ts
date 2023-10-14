@@ -1,4 +1,5 @@
 import { Sentiment } from '../utils/types.js'
+import { negatorsSet } from './negators.js'
 import { wordsScores } from './wordsScore.js'
 
 /**
@@ -8,6 +9,7 @@ export class SentimentDetector {
   valueMapping: Map<string, number>
 
   private static instance: SentimentDetector | null = null
+  private negatorsSet = negatorsSet
 
   constructor() {
     if (SentimentDetector.instance === null) {
@@ -21,8 +23,22 @@ export class SentimentDetector {
     /**
      * Get the score of the text
      **/
-    const score = text.reduce((acc: number, red: string) => {
-      const wordScore = this.getWordScore(red)
+    const score = text.reduce((acc: number, red: string, index: number) => {
+      /**
+       * Get the point value of the word
+       **/
+      let wordScore = this.getWordScore(red)
+
+      /**
+       * If previous word is a negator, aka: "not", "can't", negate the current point value of the word
+       *  "beautiful"  => 3 points
+       *  "You are beautiful" => 0 + 0 + 3  => 3 points
+       *  "You are not beautiful" => 0 + 0 + 0 + 3 * (-1)  => -3 points
+       **/
+      if (index && this.negatorsSet.has(text[index - 1])) {
+        wordScore = -wordScore
+      }
+
       acc += wordScore
       return acc
     }, 0)
@@ -37,6 +53,9 @@ export class SentimentDetector {
     return 'neutral'
   }
 
+  /**
+   * Get the point value of the word
+   **/
   getWordScore(word: string): number {
     return this.valueMapping.has(word) ? this.valueMapping.get(word) : 0
   }

@@ -28,7 +28,7 @@ export class Scrapper {
 
   async startScrapper() {
     try {
-      this.browser = await puppeteer.launch({ headless: false })
+      this.browser = await puppeteer.launch({ headless: true })
       const cardsHtml = await this.getCardsHTml()
 
       /**
