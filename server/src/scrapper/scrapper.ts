@@ -87,9 +87,6 @@ export class Scrapper {
     if (this.dataToScrape.has('image')) {
       scrapedData.image = this.scrapeRoute + $('img').first().attr('src')
     }
-    if (this.dataToScrape.has('href')) {
-      scrapedData.href = this.scrapeRoute + $('a').attr('href')
-    }
     if (this.dataToScrape.has('short_description')) {
       scrapedData.short_description = $('div.group div').last().text()
     }
@@ -115,10 +112,19 @@ export class Scrapper {
     }
 
     /**
+     * We need to always scrape the href of the article
+     * in case we need to scrape data from the article
+     **/
+    const href = this.scrapeRoute + $('a').attr('href')
+    if (this.dataToScrape.has('href')) {
+      scrapedData.href = href
+    }
+
+    /**
      * Scrape article data
      **/
     if (this.dataToScrape.has('length') || this.dataToScrape.has('sentiment')) {
-      const { length, sentiment } = await this.scrapeArticle(scrapedData.href)
+      const { length, sentiment } = await this.scrapeArticle(href)
       if (this.dataToScrape.has('length')) {
         scrapedData.length = length
       }
@@ -132,7 +138,7 @@ export class Scrapper {
   /**
    * Scrape article data
    **/
-  async scrapeArticle(articleLink: string): Promise<Partial<CardData>> {
+  private async scrapeArticle(articleLink: string): Promise<Partial<CardData>> {
     // console.log('Scrapping article')
     const page = await this.browser.newPage()
     await page.goto(articleLink, { waitUntil: 'domcontentloaded' })
