@@ -4,25 +4,29 @@ import {
   SentimentDetector,
   sentimentDetectorInstance,
 } from '../sentiment/sentimentDetector.js'
-import { ALL_OPTIONS, SCRAPE_ROUTE } from '../utils/constants.js'
+import {
+  ALL_SCRAPE_OPTIONS,
+  SCRAPE_ROUTE,
+  dataToScrapeSet,
+} from '../utils/constants.js'
 import { CardData, DesiredData } from '../utils/types.js'
 import { convert } from 'html-to-text'
 
 export class Scrapper {
   private browser: null | Browser
-  private desiredData: Set<DesiredData>
+  private dataToScrape: Set<DesiredData>
   private sentimentDetector: SentimentDetector
   private scrapeRoute: string
 
   constructor(
-    desiredData: DesiredData[] | 'all',
+    dataToScrape: DesiredData[] | 'all',
     scrapeRoute = SCRAPE_ROUTE,
     sentimentDetector: SentimentDetector = sentimentDetectorInstance,
   ) {
     this.browser = null
     this.sentimentDetector = sentimentDetector
-    this.desiredData =
-      desiredData === 'all' ? new Set(ALL_OPTIONS) : new Set(desiredData)
+    this.dataToScrape =
+      dataToScrape === 'all' ? dataToScrapeSet : new Set(dataToScrape)
     this.scrapeRoute = scrapeRoute
   }
 
@@ -77,32 +81,32 @@ export class Scrapper {
 
     const scrapedData: CardData = {}
 
-    if (this.desiredData.has('title')) {
+    if (this.dataToScrape.has('title')) {
       scrapedData.title = $('a').last().text()
     }
-    if (this.desiredData.has('image')) {
+    if (this.dataToScrape.has('image')) {
       scrapedData.image = this.scrapeRoute + $('img').first().attr('src')
     }
-    if (this.desiredData.has('href')) {
+    if (this.dataToScrape.has('href')) {
       scrapedData.href = this.scrapeRoute + $('a').attr('href')
     }
-    if (this.desiredData.has('short_description')) {
+    if (this.dataToScrape.has('short_description')) {
       scrapedData.short_description = $('div.group div').last().text()
     }
-    if (this.desiredData.has('time')) {
+    if (this.dataToScrape.has('time')) {
       scrapedData.time = $('time').text()
     }
-    if (this.desiredData.has('article_category')) {
+    if (this.dataToScrape.has('article_category')) {
       scrapedData.article_category = $('time').next().text()
     }
-    if (this.desiredData.has('author_image')) {
+    if (this.dataToScrape.has('author_image')) {
       scrapedData.author_image = this.scrapeRoute + $('img').last().attr('src')
     }
-    if (this.desiredData.has('author_name')) {
+    if (this.dataToScrape.has('author_name')) {
       scrapedData.author_name = $('img').next().find('div:first').text().trim()
     }
 
-    if (this.desiredData.has('author_occupation')) {
+    if (this.dataToScrape.has('author_occupation')) {
       scrapedData.author_occupation = $('img')
         .next()
         .find('div:last')
@@ -113,12 +117,12 @@ export class Scrapper {
     /**
      * Scrape article data
      **/
-    if (this.desiredData.has('length') || this.desiredData.has('sentiment')) {
+    if (this.dataToScrape.has('length') || this.dataToScrape.has('sentiment')) {
       const { length, sentiment } = await this.scrapeArticle(scrapedData.href)
-      if (this.desiredData.has('length')) {
+      if (this.dataToScrape.has('length')) {
         scrapedData.length = length
       }
-      if (this.desiredData.has('sentiment')) {
+      if (this.dataToScrape.has('sentiment')) {
         scrapedData.sentiment = sentiment
       }
     }
@@ -142,15 +146,15 @@ export class Scrapper {
 
     const articleText = this.htmlToClenedText(articleHtml)
 
-    const cleanedTextArray = this.htmlToClenedText(articleText).split(' ')
+    const cleanedTextArray = articleText.split(' ')
 
     const articleData: Partial<CardData> = {}
 
-    if (this.desiredData.has('sentiment')) {
+    if (this.dataToScrape.has('sentiment')) {
       articleData.sentiment =
         this.sentimentDetector.determineTextSentiment(cleanedTextArray)
     }
-    if (this.desiredData.has('length')) {
+    if (this.dataToScrape.has('length')) {
       articleData.length = cleanedTextArray.length
     }
 

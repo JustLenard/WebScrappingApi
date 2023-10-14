@@ -24,9 +24,7 @@ export class SentimentDetector {
      * Get the score of the text
      **/
     const score = text.reduce((acc: number, red: string, index: number) => {
-      /**
-       * Get the point value of the word
-       **/
+      // Get the point value of the word
       let wordScore = this.getWordScore(red)
 
       /**

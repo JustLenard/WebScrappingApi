@@ -29,5 +29,5 @@ export type Sentiment = 'positive' | 'neutral' | 'negative'
 
 export type PostData = {
   linkToScrape: string
-  dataPointsToScrape: DesiredData[]
+  dataPointsToScrape: DesiredData[] | 'all'
 }
