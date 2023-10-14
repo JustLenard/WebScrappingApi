@@ -6,6 +6,7 @@ import {
 } from '../sentiment/sentimentDetector.js'
 import { ALL_OPTIONS, SCRAPE_ROUTE } from '../utils/constants.js'
 import { CardData, DesiredData } from '../utils/types.js'
+import { convert } from 'html-to-text'
 
 export class Scrapper {
   private browser: null | Browser
@@ -28,7 +29,6 @@ export class Scrapper {
   async startScrapper() {
     try {
       this.browser = await puppeteer.launch({ headless: false })
-
       const cardsHtml = await this.getCardsHTml()
 
       /**
@@ -132,36 +132,20 @@ export class Scrapper {
    * Scrape article data
    **/
   async scrapeArticle(articleLink: string): Promise<Partial<CardData>> {
+    // console.log('Scrapping article')
     const page = await this.browser.newPage()
-
-    // Navigate the page to a URL
-    console.log('This is articleLink', articleLink)
     await page.goto(articleLink, { waitUntil: 'domcontentloaded' })
     await page.setViewport({ width: 1080, height: 1024 })
 
-    const aTag = await page.$('a')
+    const pageHtml = await page.content()
 
-    const articleElem = await aTag.evaluateHandle((aTagElem) => {
-      let temp = aTagElem
-      for (let i = 0; i < 2; i++) {
-        temp = temp.parentElement
-      }
+    const $ = cheerio.load(pageHtml)
 
-      return temp
-    })
+    const articleHtml = $('a').parent().siblings().html()
 
-    // Get the HTML content of the card.
-    const articleHtml = await page.evaluate(
-      (card) => card.innerHTML,
-      articleElem,
-    )
+    const articleText = this.htmlToClenedText(articleHtml)
 
-    const $ = cheerio.load(articleHtml)
-    const articleText = $('div:first').text()
-
-    const cleanedTextArray = this.cleanText(articleText).split(' ')
-
-    // const text = this.cleanText(articleText)
+    const cleanedTextArray = this.htmlToClenedText(articleText).split(' ')
 
     const articleData: Partial<CardData> = {}
 
@@ -173,18 +157,21 @@ export class Scrapper {
       articleData.length = cleanedTextArray.length
     }
 
+    console.log('This is articleData', articleData)
     return articleData
   }
 
   /**
-   * Leave only alpha numberic, spaces and convert to lower case
+   * Format the string. Leave only alpha numberic characters, apostrophes(') and spaces. Convert to lower case
    **/
-  private cleanText(text: string) {
-    return (
-      text
-        // .replaceAll(/[^a-zA-Z\s]+/g, ' ')
-        // .replaceAll('  ', '')
-        .toLowerCase()
-    )
+  private htmlToClenedText(htmlString: string) {
+    return convert(htmlString, {
+      wordwrap: false,
+    })
+      .replaceAll('\n', ' ')
+      .replaceAll(' * ', '')
+      .replaceAll('  ', ' ')
+      .replaceAll(/[^a-zA-Z\s']+/g, '')
+      .toLowerCase()
   }
 }

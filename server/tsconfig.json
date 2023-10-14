@@ -1,24 +1,16 @@
 {
   "compilerOptions": {
-    "target": "es2022",
-    "module": "ESNext",
-    "lib": ["ES2022"],
-    "moduleResolution": "Bundler",
-    "rootDir": ".",
-    "resolveJsonModule": true,
-    "outDir": "build",
-    "allowSyntheticDefaultImports": true,
-    "importHelpers": true,
-    "alwaysStrict": true,
-    "sourceMap": true,
-    "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true,
-    "noImplicitReturns": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noImplicitAny": false,
-    "noImplicitThis": false,
+    "target": "ESNext", // Specify the ECMAScript version to target
+    "module": "ESNext", // Use ESM (ESNext) for module system
+    "outDir": "build", // Output directory for compiled files
+    "rootDir": "./src", // Root directory for your source files
+    "strict": true, // Enable strict type checking
+    "esModuleInterop": true, // Allows importing CommonJS modules with ESM
+    "resolveJsonModule": true, // Enable importing JSON files as modules
+    "moduleResolution": "node", // Use Node.js module resolution strategy
+    "skipLibCheck": true, // Skip type checking of declaration files
     "strictNullChecks": false
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*.ts", "src/**/*.d.ts"],
+  "exclude": ["node_modules"]
 }

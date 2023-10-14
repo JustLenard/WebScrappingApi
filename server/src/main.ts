@@ -22,8 +22,12 @@ app.post('/api/scrape', async (req, res) => {
   res.status(200).json(scrappedData)
 })
 
-// const scrapper = new Scrapper('all')
-// const data = await scrapper.startScrapper()
+const scrapper = new Scrapper('all')
+await scrapper.startScrapper()
+
+const data = await scrapper.scrapeArticle(
+  'https://wsa-test.vercel.app/blog/the-joys-of-gardening',
+)
 // console.log('This is data', data)
 
 app.listen(port, async () => {
