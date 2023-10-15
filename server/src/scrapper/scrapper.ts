@@ -88,7 +88,7 @@ export class Scrapper {
       scrapedData.image = this.scrapeRoute + $('img').first().attr('src')
     }
     if (this.dataToScrape.has('short_description')) {
-      scrapedData.short_description = $('div.group div').last().text()
+      scrapedData.short_description = $('a').last().parent().next().text()
     }
     if (this.dataToScrape.has('time')) {
       scrapedData.time = $('time').text()
