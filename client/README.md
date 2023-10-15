@@ -31,7 +31,7 @@ To run the frontend application, you need to have the following installed:
     touch .env
     ```
 
-5. **Add .env variables:**
+5. **Add .env variables. Make sure PORT matches your server's port:**
 
     ```bash
     VITE_APP_API="http://localhost:5000/api"
