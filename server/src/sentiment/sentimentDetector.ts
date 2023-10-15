@@ -6,14 +6,14 @@ import { wordsScores } from './wordsScore.js'
  * Singleton class to handle sentiment detection of articles
  **/
 export class SentimentDetector {
-  valueMapping: Map<string, number>
+  wordsValueMapping: Map<string, number>
 
   private static instance: SentimentDetector | null = null
   private negatorsSet = negatorsSet
 
   constructor() {
     if (SentimentDetector.instance === null) {
-      this.valueMapping = new Map(Object.entries(wordsScores))
+      this.wordsValueMapping = new Map(Object.entries(wordsScores))
       SentimentDetector.instance = this
     }
     return SentimentDetector.instance
@@ -55,7 +55,9 @@ export class SentimentDetector {
    * Get the point value of the word
    **/
   getWordScore(word: string): number {
-    return this.valueMapping.has(word) ? this.valueMapping.get(word) : 0
+    return this.wordsValueMapping.has(word)
+      ? this.wordsValueMapping.get(word)
+      : 0
   }
 }
 
