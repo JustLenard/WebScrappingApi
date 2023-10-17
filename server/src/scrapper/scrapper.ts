@@ -1,16 +1,12 @@
 import * as cheerio from 'cheerio'
+import { convert } from 'html-to-text'
 import puppeteer, { Browser } from 'puppeteer'
 import {
   SentimentDetector,
   sentimentDetectorInstance,
 } from '../sentiment/sentimentDetector.js'
-import {
-  ALL_SCRAPE_OPTIONS,
-  SCRAPE_ROUTE,
-  dataToScrapeSet,
-} from '../utils/constants.js'
+import { SCRAPE_ROUTE, dataToScrapeSet } from '../utils/constants.js'
 import { CardData, DesiredData } from '../utils/types.js'
-import { convert } from 'html-to-text'
 
 export class Scrapper {
   private browser: null | Browser
@@ -139,7 +135,6 @@ export class Scrapper {
    * Scrape article data
    **/
   private async scrapeArticle(articleLink: string): Promise<Partial<CardData>> {
-    // console.log('Scrapping article')
     const page = await this.browser.newPage()
     await page.goto(articleLink, { waitUntil: 'domcontentloaded' })
     await page.setViewport({ width: 1080, height: 1024 })
@@ -164,7 +159,6 @@ export class Scrapper {
       articleData.length = cleanedTextArray.length
     }
 
-    console.log('This is articleData', articleData)
     return articleData
   }
 

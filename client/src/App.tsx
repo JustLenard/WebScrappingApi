@@ -15,7 +15,7 @@ const App: React.FC = () => {
 	const postData = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
 
-		// Prevent user from submitting multiple forms
+		// Prevent user from submitting multiple forms if request is pending
 		if (loading) return
 
 		const postData: PostData = {
